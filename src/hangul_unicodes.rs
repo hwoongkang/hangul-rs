@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 pub const HANGUL_SYLLABLE_START: u32 = 0xAC00; //가
 pub const HANGUL_SYLLABLE_END: u32 = 0xD7A3; //힣
 
