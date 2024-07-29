@@ -1,6 +1,8 @@
+mod assemble;
 mod disassemble;
 mod hangul_unicodes;
 
+pub use assemble::assemble;
 pub use disassemble::disassemble;
 
 pub fn add(left: usize, right: usize) -> usize {

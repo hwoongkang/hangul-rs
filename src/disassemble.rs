@@ -65,7 +65,7 @@ fn disassemble_jamo(jamo: char) -> Vec<char> {
 }
 
 #[cfg(test)]
-mod tests {
+mod disassemble_tests {
     use super::*;
 
     #[test]
