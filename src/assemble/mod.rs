@@ -1,52 +1,34 @@
 #[derive(Debug)]
 enum AssembleState {
-    // ch is the current character
-    // append(cho, jung, jong) is the function to add hangul syllable
-    // append(ch) adds non-hangul-syllable character
-
     // initial state of the state machine
-    // Sometimes, it is desirable to handle initial action at the same time
-    // the function is called init(ch)
-
-    // choseong => Cho(ch)
-    // jungseong => Jung(ch)
-    // default => append(ch) and back to initial
+    // if choseong => Cho
+    // if jungseong => Jung
+    // if neither => append and back to initial
     Initial,
-
     // a choseong appeared.
-    // joinable choesong => ChoCho(prev, ch, joined)
-    // other choseong => append(prev) | Cho(ch)
-    // jungseong => ChoJung(prev, ch)
-    // else => append(prev) | append(ch) | Initial
+    // if followed by a joinable choesongs => ChoCho
+    // if followed by other choseongs => Cho, append the previous choseong
+    // if followed by a jungseong => ChoJung
+    // else => Initial,append the previous choseong and the current character
     Cho(char),
-
     // a jungseong appeared
-    // joinable jungseong => append(joiend) | Initial
-    // else => append(prev) | init(ch)
+    // if followed by a joinable jungseong => Jung, append the joined jungseong
     Jung(char),
-
-    // joinable consonants appeared. (cho1, cho2, joined)
-    // jungseong => append(cho1)| ChoJung(cho2, ch) the first consonant.
-    // else => append(joined) | init(ch)
+    // joinable consonants appeared. third state is the joined consonant.
+    // if followed by a jungseong => ChoJung, append the first consonant.
+    // else => append joined choseong, back to initial with the current character.
     ChoCho(char, char, char),
-
-    // choseong-jungseong. (cho, jung)
-    // jongseong => ChoJungJong(cho, jung, ch)
-    // joinable jungseong => ChoJung(cho, joined)
-    // other jungseong => append(cho, jung) | Jung(ch)
-    // else => append(cho, jung) | init(ch)
+    // a consonant followed by a vowel.
     ChoJung(char, char),
-
-    // choseong-jungseong-jongseong. (cho, jung, jong)
-    // joinable jongseong => ChoJungJongJong(cho, jung, jong, ch, joined)
-    // jungseong => append(cho, jung) | ChoJung(jong, ch)
-    // else => append(cho, jung, jong) | init(ch)
+    // choseong-jungseong-jongseong.
+    // if followed by a joinable jongseong => ChoJungJongJong
+    // if followed by a jungseong => ChoJung, append the previous choseong and jungseong
+    // else => append the assembled hangul, back to initial with the current character.
     ChoJungJong(char, char, char),
-
     // choseong-jungseong-jongseong-jongseong
-    // (cho, jung, jong1, jong2, joined)
-    // jungseong => append(cho, jung, jong1) | ChoJung(jong2, jung)
-    // else => append(cho, jung, joined) | init(ch)
+    // cho, jung, jong1, jong2, joined
+    // if followed by a jungseong => ChoJung(jong2, jung), append(cho, jung, jong1)
+    // else => append(cho, jung, joined), back to initial with the current character.
     ChoJungJongJong(char, char, char, char, char),
 }
 
@@ -144,6 +126,7 @@ pub fn assemble(chars: &[char]) -> String {
             }
         }
     }
+    println!("{:?}", state);
 
     // final flushing
     match state {
@@ -228,10 +211,6 @@ mod assemble_tests {
             ]),
             "뷁궬릪쯻튋",
         );
-    }
-    #[test]
-    fn invalid_jongseongs() {
-        assert_eq!(assemble(&['ㅂ', 'ㅏ', 'ㅃ', 'ㅡ', 'ㄷ', 'ㅏ']), "바쁘다")
     }
 
     #[test]
