@@ -229,6 +229,10 @@ mod assemble_tests {
             "뷁궬릪쯻튋",
         );
     }
+    #[test]
+    fn invalid_jongseongs() {
+        assert_eq!(assemble(&['ㅂ', 'ㅏ', 'ㅃ', 'ㅡ', 'ㄷ', 'ㅏ']), "바쁘다")
+    }
 
     #[test]
     fn test_assemble_single_character() {

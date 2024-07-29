@@ -94,6 +94,7 @@ pub fn jong_index(jong: &char) -> u32 {
         'ㅌ' => 25,
         'ㅍ' => 26,
         'ㅎ' => 27,
+
         _ => panic!("Invalid jong: {}", jong),
     }
 }
