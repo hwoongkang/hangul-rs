@@ -144,7 +144,6 @@ pub fn assemble(chars: &[char]) -> String {
             }
         }
     }
-    println!("{:?}", state);
 
     // final flushing
     match state {
