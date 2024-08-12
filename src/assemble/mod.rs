@@ -1,34 +1,54 @@
 #[derive(Debug)]
 enum AssembleState {
-    // initial state of the state machine
-    // if choseong => Cho
-    // if jungseong => Jung
-    // if neither => append and back to initial
+    // two util funcs: append and initialize.
+    // append(char) means appending a non-hangul char to the result
+    // append(cho, jung, jong) means,
+    // appending a hangul syllable with corresponding jamos.
+
+    // initialize(char) is the first step (Initial -> SomeState)
+    // if choseong => Cho(cho)
+    // if jungseong => Jung(jung)
+    // else => append(char) | Initial
+
+    // Initial(): Blank state. No char has been stored.
+    // initialize(char)
     Initial,
-    // a choseong appeared.
-    // if followed by a joinable choesongs => ChoCho
-    // if followed by other choseongs => Cho, append the previous choseong
-    // if followed by a jungseong => ChoJung
-    // else => Initial,append the previous choseong and the current character
+
+    // Cho(cho): A choseong appeared.
+    // if followed by a joinable choesong (cho2, joined) => ChoCho(cho, cho2, joined)
+    // else if followed by other choseongs (cho2) => append(cho) | Cho(cho2)
+    // if followed by a jungseong (jung) => ChoJung(cho, jung)
+    // else (char) => append(char) | Initial
     Cho(char),
-    // a jungseong appeared
-    // if followed by a joinable jungseong => Jung, append the joined jungseong
+
+    // Jung(jung): A jungseong appeared.
+    // if followed by a joinable jungseong (jung2, joined) => Jung(joined)
+    // else (jung2) => append(jung) | Jung(jung2)
     Jung(char),
-    // joinable consonants appeared. third state is the joined consonant.
-    // if followed by a jungseong => ChoJung, append the first consonant.
-    // else => append joined choseong, back to initial with the current character.
+
+    // ChoCho(cho1, cho2, joined)
+    // joinable choseong appeared. third state is the joined choseongs.
+    // if followed by a jungseong (jung) => append(cho1) | ChoJung(cho2, jung)
+    // else (char) => append(joined) | initialize(char)
     ChoCho(char, char, char),
-    // a consonant followed by a vowel.
+
+    // ChoJung(cho, jung): a choseong followed by a jungseong.
+    // if followed by a jongseong (jong) => ChoJungJong(cho, jung, jong)
+    // else if followed by a joinable jungseong(joined) => ChoJung(cho, joined)
+    // else (char) => append(cho, jung) | initialize(char)
     ChoJung(char, char),
+
+    // ChoJungJong(cho, jung, jong)
     // choseong-jungseong-jongseong.
-    // if followed by a joinable jongseong => ChoJungJongJong
-    // if followed by a jungseong => ChoJung, append the previous choseong and jungseong
-    // else => append the assembled hangul, back to initial with the current character.
+    // if followed by a joinable jongseong(jong2, joined) => ChoJungJongJong(cho, jung, jong, jong2, joined)
+    // if followed by a jungseong (jung2) => append(cho, jung) | ChoJung(jong, jung2)
+    // else (char) => append(cho, jung, jong) | initialize(char)
     ChoJungJong(char, char, char),
+
     // choseong-jungseong-jongseong-jongseong
-    // cho, jung, jong1, jong2, joined
-    // if followed by a jungseong => ChoJung(jong2, jung), append(cho, jung, jong1)
-    // else => append(cho, jung, joined), back to initial with the current character.
+    // ChoJungJongJong(cho, jung, jong1, jong2, joined)
+    // if followed by a jungseong (jung2)=> append(cho, jung, jong1) | ChoJung(jong2, jung)
+    // else (char) => append(cho, jung, joined), initialize(char)
     ChoJungJongJong(char, char, char, char, char),
 }
 

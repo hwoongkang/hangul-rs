@@ -21,7 +21,7 @@ pub const HANGUL_COMPATIBILITY_JAMO_END: u32 = 0x3163; //officially continues un
 
 pub const HANGUL_JUNGSEONG_START: u32 = 0x314F;
 
-pub const HANGUL_JONGSEONG_START: u32 = 0x3131;
+pub const _HANGUL_JONGSEONG_START: u32 = 0x3131;
 
 pub fn is_cho(ch: &char) -> bool {
     CHOSEONGS.contains(ch)
